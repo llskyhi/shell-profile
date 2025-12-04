@@ -7,6 +7,7 @@ alias grep="grep --color=auto"
 alias ls="ls --color=auto"
 alias ll="ls -lvAF --group-directories-first --sort=extension"
 alias which="which --all"
+alias diff="diff --strip-trailing-cr --color=auto"
 # https://stackoverflow.com/questions/36841241/can-i-get-the-locate-to-work-on-windows-through-git-bash
 alias updatedb='updatedb --localpaths='\''/c/'\'
 

@@ -16,6 +16,14 @@ alias envs='env | sort | grep -P "^\w+?(?==)|"'
 # list paths in PATH
 alias path='echo "$PATH" | awk -F":" '\''{for(i=1;i<=NF;i++) print $i}'\'
 
+# run profiles under ~/.config/bash/profile.d/
+bash_profile_directory="${HOME}/.config/bash/profile.d"
+if [ -d "${bash_profile_directory}" ]; then
+    for bash_profile in $(echo "${bash_profile_directory}"/*); do
+        test -f "${bash_profile}" && . "${bash_profile}"
+    done
+fi
+
 # https://www.man7.org/linux/man-pages/man1/bash.1.html#PROMPTING
 # https://en.wikipedia.org/wiki/ANSI_escape_code#Colors
 PS1=''                          # reset

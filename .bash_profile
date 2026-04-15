@@ -44,4 +44,4 @@ if $(command -v "__git_ps1" 2>&1 > /dev/null); then
 fi
 PS1="$PS1"'\[\033[0m\]'         # color: reset
 PS1="$PS1"'\n'                  # new line
-PS1="$PS1"'$ '                  # prompt character (# or $)
+PS1="$PS1"'\$ '                  # prompt character (# or $)

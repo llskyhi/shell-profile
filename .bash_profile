@@ -2,9 +2,6 @@ test -f ~/.bashrc && . ~/.bashrc
 
 export LANG=en_US.UTF-8
 
-# https://stackoverflow.com/questions/10488498/bash-history-does-not-update-in-git-for-windows-git-bash/10901227#10901227
-PROMPT_COMMAND='history -a'
-
 alias grep="grep --color=auto"
 alias ls="ls --color=auto"
 alias ll="ls -lvAF --group-directories-first --sort=extension"
@@ -27,7 +24,7 @@ fi
 # https://www.man7.org/linux/man-pages/man1/bash.1.html#PROMPTING
 # https://en.wikipedia.org/wiki/ANSI_escape_code#Colors
 PS1=''                          # reset
-PS1="$PS1"'\n'                  # new line
+PS1="$PS1"'\[\033[0m\]'         # reset style
 PS1="$PS1"'\[\033[90m\]'        # color: gray
 PS1="$PS1"'\t '                 # HH:MM:SS
 PS1="$PS1"'\[\033[32m\]'        # color: green
@@ -42,6 +39,34 @@ if $(command -v "__git_ps1" 2>&1 > /dev/null); then
     PS1="$PS1"'\[\033[36m\]'    # color: cyan
     PS1="$PS1"'`__git_ps1`'
 fi
-PS1="$PS1"'\[\033[0m\]'         # color: reset
+PS1="$PS1"'\[\033[0m\]'         # reset style
 PS1="$PS1"'\n'                  # new line
 PS1="$PS1"'\$ '                  # prompt character (# or $)
+
+
+function __print_exit_code() {
+    local exit_code="$1"
+
+    local exit_code_line=''
+    exit_code_line="$exit_code_line"'\n'        # new line
+    exit_code_line="$exit_code_line"'\033[3m'   # italic
+    if [ $exit_code -ne 0 ]; then
+        exit_code_line="$exit_code_line"'\033[31m'  # color: red
+    else
+        exit_code_line="$exit_code_line"'\033[90m'  # color: gray
+    fi
+    exit_code_line="$exit_code_line""(exit code: $exit_code)"
+    exit_code_line="$exit_code_line"'\033[0m'   # reset style
+    echo -e "$exit_code_line"
+}
+
+function __prompt_command() {
+    __print_exit_code "$?"
+
+    # for Git Bash
+    # https://stackoverflow.com/questions/10488498/bash-history-does-not-update-in-git-for-windows-git-bash/10901227#10901227
+    # history -a
+}
+
+# https://www.gnu.org/software/bash/manual/bash.html#index-PROMPT_005fCOMMAND
+PROMPT_COMMAND='__prompt_command'

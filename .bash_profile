@@ -2,6 +2,10 @@ test -f ~/.bashrc && . ~/.bashrc
 
 export LANG=en_US.UTF-8
 
+alias ~="cd ~"
+# 2026-06-18: `alias -=...` will not simply work cuz `-=` is recognized as an unknown option (-=: invalid option).
+#             Not sure why but inserting `--` seems to work.
+alias -- -="cd -"
 alias grep="grep --color=auto"
 alias ls="ls --color=auto"
 alias ll="ls -lvAF --group-directories-first --sort=extension"

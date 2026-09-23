@@ -68,24 +68,65 @@ PS1="$PS1"'\$ '                 # prompt character (# or $)
 PS1="$PS1""$(__enclose_npc "$ANSI_CODE_RESET")"
 
 
-function __print_exit_code() {
-    local exit_code="$1"
+COMMAND_START_TIME_FILE_PATH="/dev/shm/command-start-time-shell-pid-$$"
+function __ps0() {
+    date +%s > "$COMMAND_START_TIME_FILE_PATH"
+}
+PS0='$(__ps0)'
 
-    local exit_code_line=''
-    exit_code_line="$exit_code_line"'\n'        # new line
-    exit_code_line="$exit_code_line""$ANSI_CODE_ITALIC"
+function __print_last_command_execution_info() {
+    local exit_code="$1"
+    local command_elapsed_seconds="$2"
+    local output
+
+    output=''
+    output="$output""$ANSI_CODE_ITALIC"
+    output="$output""$ANSI_CODE_GRAY"
+    output="$output""("
+
+    # exit code
     if [ $exit_code -ne 0 ]; then
-        exit_code_line="$exit_code_line""$ANSI_CODE_RED"
+        output="$output""$ANSI_CODE_RED"
     else
-        exit_code_line="$exit_code_line""$ANSI_CODE_GRAY"
+        output="$output"
     fi
-    exit_code_line="$exit_code_line""(exit code: $exit_code)"
-    exit_code_line="$exit_code_line""$ANSI_CODE_RESET"
-    echo -e "$exit_code_line"
+    output="$output""exit code: $exit_code"
+    output="$output""$ANSI_CODE_GRAY"
+
+    # elapsed time in seconds
+    if [ -n "$command_elapsed_seconds" ]; then
+        output="$output"", ${command_elapsed_seconds} seconds elapsed"
+    fi
+
+    output="$output"")"
+    output="$output""$ANSI_CODE_RESET"
+    echo -e "$output"
 }
 
 function __prompt_command() {
-    __print_exit_code "$?"
+    local exit_code="$?"
+    local command_start_time
+    local command_end_time=$(date +%s)
+    local command_elapsed_seconds
+
+    # When it's first prompt, no need for the last command execution info.
+    if [ "$is_not_first_prompt" != 'yes' ] ;  then
+        is_not_first_prompt='yes'
+        return
+    fi
+
+    if [ -s "$COMMAND_START_TIME_FILE_PATH" ]; then
+        command_start_time=$(cat "$COMMAND_START_TIME_FILE_PATH")
+        command_elapsed_seconds=$((command_end_time - command_start_time))
+        # Remove the command start time file, otherwise shell inputs that does not trigger PS0 (e.g. press enter directly)
+        # will leave this unrefreshed and cause unwanted elapsed time.
+        rm "$COMMAND_START_TIME_FILE_PATH"
+    fi
+
+    # A newline for distinguishing/separating last command output and next command prompt.
+    echo
+
+    __print_last_command_execution_info "$exit_code" "$command_elapsed_seconds"
 
     # for Git Bash
     # https://stackoverflow.com/questions/10488498/bash-history-does-not-update-in-git-for-windows-git-bash/10901227#10901227

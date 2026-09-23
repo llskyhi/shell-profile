@@ -41,6 +41,11 @@ function __enclose_npc() {
 }
 # https://www.man7.org/linux/man-pages/man1/bash.1.html#PROMPTING
 # https://en.wikipedia.org/wiki/ANSI_escape_code#Colors
+# 2026-09-23: it's found there's a bug on MSYS2 bash (also affects Git Bash)
+#             when using command substitution (the "$(...)" syntax) and newline (\n) together in PS1.
+#             The bug still consists as of write using version 5.3.15(1)-release.
+# https://github.com/msys2/MSYS2-packages/issues/1839
+# https://stackoverflow.com/a/21561763/25956559
 PS1=''                          # reset
 PS1="$PS1""$(__enclose_npc "$ANSI_CODE_RESET")"
 PS1="$PS1""$(__enclose_npc "$ANSI_CODE_GRAY")"
@@ -55,10 +60,10 @@ PS1="$PS1"'\w'                  # current working directory
 # for MSYS2: make '/etc/profile.d/' to have a '/usr/share/git/git-prompt.sh'
 if $(command -v "__git_ps1" 2>&1 > /dev/null); then
     PS1="$PS1""$(__enclose_npc "$ANSI_CODE_CYAN")"
-    PS1="$PS1"'`__git_ps1`'
+    PS1="$PS1"'$(__git_ps1)'
 fi
 PS1="$PS1""$(__enclose_npc "$ANSI_CODE_RESET")"
-PS1="$PS1"'\n'                  # new line
+PS1="$PS1"$'\n'                 # new line
 PS1="$PS1"'\$ '                 # prompt character (# or $)
 PS1="$PS1""$(__enclose_npc "$ANSI_CODE_RESET")"
 

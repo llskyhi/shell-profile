@@ -95,9 +95,7 @@ function __print_last_command_execution_info() {
     output="$output""$ANSI_CODE_GRAY"
 
     # elapsed time in seconds
-    if [ -n "$command_elapsed_seconds" ]; then
-        output="$output"", ${command_elapsed_seconds} seconds elapsed"
-    fi
+    output="$output"", ${command_elapsed_seconds:-"N/A"} seconds elapsed"
 
     output="$output"")"
     output="$output""$ANSI_CODE_RESET"

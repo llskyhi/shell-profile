@@ -58,7 +58,10 @@ PS1="$PS1"'$MSYSTEM '           # UCRT64, etc.
 PS1="$PS1""$(__enclose_npc "$ANSI_CODE_YELLOW")"
 PS1="$PS1"'\w'                  # current working directory
 # for Git for Windows: it should be included already
-# for MSYS2: make '/etc/profile.d/' to have a '/usr/share/git/git-prompt.sh'
+# for MSYS2: ensure '/etc/profile.d/' to have a 'git-prompt.sh',
+#            which should be 'ucrt64/share/git/completion/git-prompt.sh' for UCRT64 variant package
+#            or 'usr/share/git/completion/git-prompt.sh' for base 'git' package.
+#            Path are related to MSYS2 installation root.
 if $(command -v "__git_ps1" 2>&1 > /dev/null); then
     PS1="$PS1""$(__enclose_npc "$ANSI_CODE_CYAN")"
     PS1="$PS1"'$(__git_ps1)'

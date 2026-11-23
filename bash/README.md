@@ -4,7 +4,7 @@ mkdir -p \
     ~/.config/bash/ \
     ~/.config/bash/profile.d
 
-ln \
+ln -s \
     "${PWD}/run-user-bash-profiles.sh" \
     ~/.config/bash/
 

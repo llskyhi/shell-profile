@@ -26,7 +26,7 @@ PS1="$PS1"'\t '                 # HH:MM:SS
 PS1="$PS1""$(__enclose_npc "$ANSI_CODE_GREEN")"
 PS1="$PS1"'\u@\H '              # user@host
 PS1="$PS1""$(__enclose_npc "$ANSI_CODE_PURPLE")"
-PS1="$PS1"'$MSYSTEM '           # UCRT64, etc.
+PS1="$PS1"'${MSYSTEM:+$MSYSTEM }'   # UCRT64, etc.
 PS1="$PS1""$(__enclose_npc "$ANSI_CODE_YELLOW")"
 PS1="$PS1"'\w'                  # current working directory
 # for Git for Windows: it should be included already

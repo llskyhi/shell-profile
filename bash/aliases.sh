@@ -7,7 +7,7 @@ alias ..="cd ../"
 alias ls="ls --color=auto"
 alias ll="ls -lvAF --group-directories-first --sort=extension"
 alias grep="grep --color=auto"
-alias which="which --all"
+alias which="which -a"
 alias diff="diff --strip-trailing-cr --color=auto"
 
 # list environment variables
